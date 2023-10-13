@@ -1,0 +1,80 @@
+<!--  наследуемся от шаблона default.html, который мы создавали ещё во времена flatpages -->
+{% extends 'flatpages/default.html' %} 
+
+{% load censor_filters %} <!-- не забываем заранее загружать наши фильтры! -->
+ 
+
+{% block title %}
+NEWS
+{% endblock title %}
+ 
+
+{% block content %}
+<h1>Поиск статей</h1>
+<hr>
+    {% if news %}
+        <form method="GET">
+            {{ filter.form }}
+            <input type="submit" value="Найти">
+        </form>
+        <br>
+        <table>
+            <tr>
+                <td>
+                    Заголовок статьи
+                </td>
+                <td>
+                    Дата публикации
+                </td>
+                <td>
+                    Автор
+                </td>                
+                <td>
+                    Статья
+                </td>
+            </tr>
+        {% for new in filter.qs %}
+            <tr>
+                <td>
+                    {{ new.title|censor }} <!-- используем фильтр censor  -->
+                </td>
+                <td>
+                    {{ new.dateCreat|date:'d M Y h:m' }}
+                </td>
+                <td>
+                    {{ new.author.authorUser}}
+                </td>
+                <td>
+                    {{ new.text|censor|truncatechars:50 }} <!-- используем фильтр censor и выводим только 50 знаков статьи -->
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+
+   
+
+
+        {% if is_paginated %}
+
+            {% if page_obj.has_previous %}
+                <a href="?page=1">First</a>
+                <a href="?page={{ page_obj.previous_page_number }}"><<<</a>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <a>{{ num }}</a>
+                {% elif num > page_obj.number|add:'-2' and num < page_obj.number|add:'2' %}
+                    <a href="?page={{ num }}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">>>></a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+            {% endif %}
+
+    {% endif %}       
+{% endif %}    
+    
+{% endblock content %}

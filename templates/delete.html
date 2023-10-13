@@ -1,0 +1,23 @@
+<!--  наследуемся от шаблона default.html, который мы создавали ещё во времена flatpages -->
+{% extends 'flatpages/default.html' %} 
+
+{% load censor_filters %} <!-- не забываем заранее загружать наши фильтры! -->
+ 
+
+{% block title %}
+Удалить  статью : {{ post.title }}
+{% endblock title %}
+
+
+<!-- В контенте на странице мы выводим статью, айди которой было передано в адрес -->
+{% block content %}
+<h2>Статья: {{ post.title|censor }}</h2> <!-- используем фильтр censor  -->
+<h4>Дата публикации : {{ post.dateCreat|date:'d M Y h:m' }}</h4>
+<br>
+{{ post.text|censor }} <!-- используем фильтр censor -->
+ 
+<h2>Вы точно хотите удалить эту статью?</h2>
+<form method="POST">
+    {% csrf_token %}
+    <input type="submit" value="подтвердить"></form>
+{% endblock content %}

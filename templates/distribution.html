@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Новости за неделю</h2>
+    <ul>
+        {% for record in postlist %}
+            <hr>
+            <li>
+                <h2> Название : {{ record.title}} Дата создания : {{ record.dateCreat }}</h2> 
+                <h2> Автор : {{ record.author.authorUser}}</h2>
+                <p><b>Краткое содержание:</b> {{ record.text|truncatechars:50 }}...
+                    <br><a href="http://127.0.0.1:8000/news/{{post.id}}">Читать полностью</a>
+                </p>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

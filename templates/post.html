@@ -1,0 +1,44 @@
+<!--  наследуемся от шаблона default.html, который мы создавали ещё во времена flatpages -->
+{% extends 'flatpages/default.html' %} 
+
+{% load censor_filters %} <!-- не забываем заранее загружать наши фильтры! -->
+ 
+
+{% block title %}
+Статья {{ post.title }}
+{% endblock title %}
+ 
+<!-- В контенте на странице мы выводим статью, айди которой было передано в адрес -->
+{% block content %}
+<h2>Статья: {{ post.title|censor }}</h2> <!-- используем фильтр censor  -->
+<h3>Автор: {{ post.author.authorUser }} </h3>
+<h4>Дата публикации : {{ post.dateCreat|date:'d M Y h:m' }}</h4>
+{% for cat in post.category.all %}
+    Категория : {{ cat.name}}
+{% endfor %}
+<br>
+{{ post.text|censor }} <!-- используем фильтр censor -->
+
+
+<p>
+    <br>
+    <br>
+    <br>
+    {% if request.user.is_authenticated %}
+
+            {% for category in post.category.all %}
+                {% if not category in user_category %}
+                    Вы можете подписаться на новости категории:
+                    <br><button> <a href="{% url 'subscription' %}?category_id={{ category.id }}">{{ category.name }}</a> </button>
+                {% else %}
+                    Вы уже подписаны на категории:
+                    <br>{{ category.name }}
+                {% endif %}
+            {% endfor %}
+            <h6>Ваши текущие подписки:</h6>
+            {% for category in user_category %}
+                <br>{{ category.name }}
+            {% endfor %}
+        </p>
+    {% endif %}
+{% endblock content %}
