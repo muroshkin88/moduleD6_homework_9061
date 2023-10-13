@@ -1,0 +1,5 @@
+Django
+django-filter
+APScheduler
+django-allauth
+django_apscheduler
